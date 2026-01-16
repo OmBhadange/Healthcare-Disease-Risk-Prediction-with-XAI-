@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Node
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large datasets
+*.csv
+!healthcare_dataset.csv
+
+# Model files (if too large)
+*.h5
+*.pkl
+*.joblib
+*.pth
+*.onnx
+
+# Temporary files
+*.tmp
+*.bak
+*~

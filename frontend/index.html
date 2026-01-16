@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Disease Risk Prediction | AI-Powered Diagnosis</title>
+    <meta name="description" content="ML/DL-based disease risk prediction with Explainable AI">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <h1>🏥 Healthcare Risk Prediction</h1>
+                <p class="subtitle">AI-Powered Disease Risk Assessment with Explainable AI</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-grid">
+            <!-- Input Form -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📋</span>
+                    <h2 class="card-title">Patient Information</h2>
+                </div>
+
+                <form id="patientForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age (years)</label>
+                            <input type="number" id="age" name="age" min="20" max="80" step="0.1" value="45" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bmi">BMI</label>
+                            <input type="number" id="bmi" name="bmi" min="18" max="45" step="0.1" value="28.5" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="glucose">Glucose (mg/dL)</label>
+                            <input type="number" id="glucose" name="glucose" min="70" max="200" step="0.1" value="140" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="blood_pressure">Blood Pressure (mmHg)</label>
+                            <input type="number" id="blood_pressure" name="blood_pressure" min="90" max="180" step="0.1" value="130" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cholesterol">Cholesterol (mg/dL)</label>
+                            <input type="number" id="cholesterol" name="cholesterol" min="150" max="300" step="0.1" value="220" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="smoking">Smoking Status</label>
+                            <select id="smoking" name="smoking" required>
+                                <option value="0">Non-Smoker</option>
+                                <option value="1">Smoker</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="exercise">Exercise (days/week)</label>
+                            <input type="number" id="exercise" name="exercise" min="0" max="5" step="1" value="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="family_history">Family History</label>
+                            <select id="family_history" name="family_history" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="model_type">AI Model</label>
+                        <select id="model_type" name="model_type" required>
+                            <option value="random_forest">Random Forest (Recommended)</option>
+                            <option value="neural_network">Neural Network</option>
+                            <option value="logistic_regression">Logistic Regression</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            🔍 Analyze Risk
+                        </button>
+                    </div>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing patient data...</p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="card results-section" id="resultsSection">
+                <div class="card-header">
+                    <span class="card-icon">📊</span>
+                    <h2 class="card-title">Risk Assessment</h2>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" data-tab="prediction">Prediction</button>
+                    <button class="tab" data-tab="explanation">XAI Explanation</button>
+                    <button class="tab" data-tab="comparison">Model Comparison</button>
+                </div>
+
+                <!-- Prediction Tab -->
+                <div class="tab-content active" id="predictionTab">
+                    <div class="risk-display" id="riskDisplay">
+                        <div class="risk-level" id="riskLevel">-</div>
+                        <div class="confidence-score">
+                            Confidence: <span id="confidenceScore">-</span>
+                        </div>
+                        <div class="model-badge" id="modelBadge">-</div>
+                    </div>
+
+                    <div class="probability-bars" id="probabilityBars">
+                        <div class="probability-item">
+                            <div class="probability-label">
+                                <span>Low Risk</span>
+                                <span id="probLow">0%</span>
+                            </div>
+                            <div class="probability-bar">
+                                <div class="probability-fill low" id="probLowBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="probability-item">
+                            <div class="probability-label">
+                                <span>Medium Risk</span>
+                                <span id="probMedium">0%</span>
+                            </div>
+                            <div class="probability-bar">
+                                <div class="probability-fill medium" id="probMediumBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="probability-item">
+                            <div class="probability-label">
+                                <span>High Risk</span>
+                                <span id="probHigh">0%</span>
+                            </div>
+                            <div class="probability-bar">
+                                <div class="probability-fill high" id="probHighBar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation Tab -->
+                <div class="tab-content" id="explanationTab">
+                    <div class="card-header">
+                        <span class="card-icon">🧠</span>
+                        <h3>SHAP Feature Importance</h3>
+                    </div>
+                    <div class="chart-container" id="shapChart">
+                        <p class="text-center" style="color: var(--text-muted);">Run analysis to see SHAP visualization</p>
+                    </div>
+
+                    <div class="card-header mt-2">
+                        <span class="card-icon">💡</span>
+                        <h3>LIME Explanation</h3>
+                    </div>
+                    <div class="explanation-text" id="limeExplanation">
+                        Run analysis to see LIME explanation
+                    </div>
+
+                    <div class="card-header mt-2">
+                        <span class="card-icon">📈</span>
+                        <h3>Top Contributing Features</h3>
+                    </div>
+                    <ul class="feature-list" id="featureList">
+                        <li class="text-center" style="color: var(--text-muted);">No data available</li>
+                    </ul>
+                </div>
+
+                <!-- Comparison Tab -->
+                <div class="tab-content" id="comparisonTab">
+                    <div class="card-header">
+                        <span class="card-icon">⚖️</span>
+                        <h3>Model Comparison</h3>
+                    </div>
+                    <div class="comparison-grid" id="comparisonGrid">
+                        <p class="text-center" style="color: var(--text-muted);">Run analysis to compare models</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">ℹ️</span>
+                <h3 class="card-title">About This System</h3>
+            </div>
+            <p style="color: var(--text-secondary); line-height: 1.8;">
+                This Healthcare Risk Prediction system uses advanced <strong>Machine Learning</strong> and 
+                <strong>Deep Learning</strong> algorithms to assess disease risk based on patient health data. 
+                The system integrates <strong>Explainable AI (XAI)</strong> techniques including 
+                <strong>SHAP</strong> (SHapley Additive Explanations) and <strong>LIME</strong> 
+                (Local Interpretable Model-agnostic Explanations) to provide transparent, interpretable 
+                predictions that healthcare professionals can trust and understand.
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
