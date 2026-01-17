@@ -89,8 +89,8 @@ class XAIExplainer:
             'prediction': int(prediction),
             'prediction_proba': prediction_proba.tolist(),
             'feature_importance': dict(sorted_features),
-            'risk_level': self._get_risk_level(prediction),
-            'confidence': float(prediction_proba[prediction])
+            'risk_level': self._get_risk_level(int(prediction)),
+            'confidence': float(prediction_proba[int(prediction)])
         }
     
     def get_lime_explanation(self, patient_data, model_type='random_forest'):
@@ -148,9 +148,9 @@ class XAIExplainer:
             'prediction': int(prediction),
             'prediction_proba': prediction_proba.tolist(),
             'feature_contributions': feature_contributions,
-            'risk_level': self._get_risk_level(prediction),
-            'confidence': float(prediction_proba[prediction]),
-            'explanation_text': self._generate_explanation_text(feature_contributions, prediction)
+            'risk_level': self._get_risk_level(int(prediction)),
+            'confidence': float(prediction_proba[int(prediction)]),
+            'explanation_text': self._generate_explanation_text(feature_contributions, int(prediction))
         }
     
     def get_combined_explanation(self, patient_data, model_type='random_forest'):
@@ -247,9 +247,14 @@ class XAIExplainer:
                 prediction = int(self.rf_model.predict(X_input)[0])
             else:
                 prediction = int(self.lr_model.predict(X_input)[0])
-            shap_values_plot = shap_values[prediction][0]
+            shap_values_plot = shap_values[int(prediction)]
+            if len(shap_values_plot.shape) > 1:
+                shap_values_plot = shap_values_plot[0]
         else:
-            shap_values_plot = shap_values[0]
+            shap_values_plot = shap_values[0] if len(shap_values.shape) > 1 else shap_values
+        
+        # Ensure it's 1D
+        shap_values_plot = np.array(shap_values_plot).flatten()
         
         # Create bar plot of feature importance
         feature_importance = dict(zip(self.feature_names, shap_values_plot))

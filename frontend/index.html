@@ -1,218 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Healthcare Disease Risk Prediction | AI-Powered Diagnosis</title>
     <meta name="description" content="ML/DL-based disease risk prediction with Explainable AI">
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'teal': {
+                            DEFAULT: '#0d9488',
+                            dark: '#0f766e',
+                            light: '#14b8a6',
+                        },
+                        'coral': {
+                            DEFAULT: '#f97316',
+                            light: '#fb923c',
+                            dark: '#ea580c',
+                        },
+                        'cream': '#fefce8',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-right': 'slideRight 0.4s ease-out',
+                        'scale-in': 'scaleIn 0.3s ease-out',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideRight: {
+                            '0%': { opacity: '0', transform: 'translateX(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <div class="container">
+
+<body class="bg-cream min-h-screen font-sans">
+    <!-- Background Pattern -->
+    <div class="fixed inset-0 opacity-30 pointer-events-none"
+        style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(13, 148, 136, 0.05) 2px, rgba(13, 148, 136, 0.05) 4px), repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(249, 115, 22, 0.05) 2px, rgba(249, 115, 22, 0.05) 4px);">
+    </div>
+
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         <!-- Header -->
-        <header>
-            <div class="header-content">
-                <h1>🏥 Healthcare Risk Prediction</h1>
-                <p class="subtitle">AI-Powered Disease Risk Assessment with Explainable AI</p>
+        <header class="text-center mb-12 animate-slide-up">
+            <div
+                class="bg-white border-4 border-black rounded-2xl p-8 shadow-[8px_8px_0px_rgba(13,148,136,0.3)] hover:shadow-[12px_12px_0px_rgba(13,148,136,0.3)] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-300 relative group">
+                <!-- Decorative corners -->
+                <div class="absolute -top-1 -left-1 w-6 h-6 border-l-4 border-t-4 border-coral"></div>
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 border-r-4 border-b-4 border-coral"></div>
+
+                <h1 class="text-4xl sm:text-5xl font-black text-teal mb-3 tracking-tight relative inline-block">
+                    Healthcare Risk Prediction
+                    <span class="absolute -bottom-2 left-0 w-full h-1 bg-coral rounded-full"></span>
+                </h1>
+                <p class="text-lg text-gray-600 font-medium mt-6">Disease Risk Assessment with Explainable AI</p>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <div class="main-grid">
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
             <!-- Input Form -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">📋</span>
-                    <h2 class="card-title">Patient Information</h2>
-                </div>
-
-                <form id="patientForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="age">Age (years)</label>
-                            <input type="number" id="age" name="age" min="20" max="80" step="0.1" value="45" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="bmi">BMI</label>
-                            <input type="number" id="bmi" name="bmi" min="18" max="45" step="0.1" value="28.5" required>
-                        </div>
+            <div class="lg:col-span-2 animate-slide-right">
+                <div
+                    class="bg-white border-4 border-black rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="flex items-center gap-3 mb-6 pb-3 border-b-2 border-dashed border-gray-300">
+                        <span class="text-2xl text-teal animate-pulse-slow">●</span>
+                        <h2 class="text-xl font-bold text-gray-900">Patient Information</h2>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="glucose">Glucose (mg/dL)</label>
-                            <input type="number" id="glucose" name="glucose" min="70" max="200" step="0.1" value="140" required>
+                    <form id="patientForm" class="space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="age" class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Age (years)
+                                </label>
+                                <input type="number" id="age" name="age" min="20" max="80" step="0.1" value="45"
+                                    required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="bmi" class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    BMI
+                                </label>
+                                <input type="number" id="bmi" name="bmi" min="18" max="45" step="0.1" value="28.5"
+                                    required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="blood_pressure">Blood Pressure (mmHg)</label>
-                            <input type="number" id="blood_pressure" name="blood_pressure" min="90" max="180" step="0.1" value="130" required>
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="cholesterol">Cholesterol (mg/dL)</label>
-                            <input type="number" id="cholesterol" name="cholesterol" min="150" max="300" step="0.1" value="220" required>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="glucose"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Glucose (mg/dL)
+                                </label>
+                                <input type="number" id="glucose" name="glucose" min="70" max="200" step="0.1"
+                                    value="140" required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="blood_pressure"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Blood Pressure (mmHg)
+                                </label>
+                                <input type="number" id="blood_pressure" name="blood_pressure" min="90" max="180"
+                                    step="0.1" value="130" required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="smoking">Smoking Status</label>
-                            <select id="smoking" name="smoking" required>
-                                <option value="0">Non-Smoker</option>
-                                <option value="1">Smoker</option>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="cholesterol"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Cholesterol (mg/dL)
+                                </label>
+                                <input type="number" id="cholesterol" name="cholesterol" min="150" max="300" step="0.1"
+                                    value="220" required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="smoking"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Smoking Status
+                                </label>
+                                <select id="smoking" name="smoking" required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                                    <option value="0">Non-Smoker</option>
+                                    <option value="1">Smoker</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="exercise"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Exercise (days/week)
+                                </label>
+                                <input type="number" id="exercise" name="exercise" min="0" max="5" step="1" value="2"
+                                    required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                            </div>
+                            <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                                <label for="family_history"
+                                    class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                    <span class="absolute left-0 text-teal text-xs">▸</span>
+                                    Family History
+                                </label>
+                                <select id="family_history" name="family_history" required
+                                    class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group transform hover:scale-105 transition-transform duration-200">
+                            <label for="model_type"
+                                class="block font-semibold text-gray-900 mb-2 text-sm relative pl-3">
+                                <span class="absolute left-0 text-teal text-xs">▸</span>
+                                AI Model
+                            </label>
+                            <select id="model_type" name="model_type" required
+                                class="w-full px-4 py-2.5 bg-amber-50 border-2 border-gray-300 rounded-lg text-gray-900 focus:border-teal focus:ring-4 focus:ring-teal/10 focus:bg-white transition-all duration-200 hover:border-gray-400">
+                                <option value="random_forest">Random Forest (Recommended)</option>
+                                <option value="neural_network">Neural Network</option>
+                                <option value="logistic_regression">Logistic Regression</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="exercise">Exercise (days/week)</label>
-                            <input type="number" id="exercise" name="exercise" min="0" max="5" step="1" value="2" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="family_history">Family History</label>
-                            <select id="family_history" name="family_history" required>
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="model_type">AI Model</label>
-                        <select id="model_type" name="model_type" required>
-                            <option value="random_forest">Random Forest (Recommended)</option>
-                            <option value="neural_network">Neural Network</option>
-                            <option value="logistic_regression">Logistic Regression</option>
-                        </select>
-                    </div>
-
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-primary btn-full">
-                            🔍 Analyze Risk
+                        <button type="submit"
+                            class="w-full mt-6 px-6 py-4 bg-coral text-white font-bold text-lg uppercase tracking-wide border-4 border-black rounded-lg shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all duration-200 relative overflow-hidden group">
+                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                Analyze Risk
+                                <span class="group-hover:translate-x-1 transition-transform duration-200">→</span>
+                            </span>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700">
+                            </div>
                         </button>
-                    </div>
-                </form>
+                    </form>
 
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>Analyzing patient data...</p>
+                    <div class="loading hidden mt-6 text-center py-8" id="loading">
+                        <div
+                            class="inline-block w-12 h-12 border-4 border-gray-300 border-t-teal border-r-coral rounded-full animate-spin mb-3">
+                        </div>
+                        <p class="text-gray-600 font-semibold animate-pulse">Analyzing patient data...</p>
+                    </div>
                 </div>
             </div>
 
             <!-- Results Section -->
-            <div class="card results-section" id="resultsSection">
-                <div class="card-header">
-                    <span class="card-icon">📊</span>
-                    <h2 class="card-title">Risk Assessment</h2>
-                </div>
-
-                <!-- Tabs -->
-                <div class="tabs">
-                    <button class="tab active" data-tab="prediction">Prediction</button>
-                    <button class="tab" data-tab="explanation">XAI Explanation</button>
-                    <button class="tab" data-tab="comparison">Model Comparison</button>
-                </div>
-
-                <!-- Prediction Tab -->
-                <div class="tab-content active" id="predictionTab">
-                    <div class="risk-display" id="riskDisplay">
-                        <div class="risk-level" id="riskLevel">-</div>
-                        <div class="confidence-score">
-                            Confidence: <span id="confidenceScore">-</span>
-                        </div>
-                        <div class="model-badge" id="modelBadge">-</div>
+            <div class="lg:col-span-3 hidden animate-scale-in" id="resultsSection">
+                <div class="bg-white border-4 border-black rounded-xl p-6 shadow-lg">
+                    <div class="flex items-center gap-3 mb-6 pb-3 border-b-2 border-dashed border-gray-300">
+                        <span class="text-2xl text-teal animate-float">▲</span>
+                        <h2 class="text-xl font-bold text-gray-900">Risk Assessment</h2>
                     </div>
 
-                    <div class="probability-bars" id="probabilityBars">
-                        <div class="probability-item">
-                            <div class="probability-label">
-                                <span>Low Risk</span>
-                                <span id="probLow">0%</span>
-                            </div>
-                            <div class="probability-bar">
-                                <div class="probability-fill low" id="probLowBar" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="probability-item">
-                            <div class="probability-label">
-                                <span>Medium Risk</span>
-                                <span id="probMedium">0%</span>
-                            </div>
-                            <div class="probability-bar">
-                                <div class="probability-fill medium" id="probMediumBar" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <div class="probability-item">
-                            <div class="probability-label">
-                                <span>High Risk</span>
-                                <span id="probHigh">0%</span>
-                            </div>
-                            <div class="probability-bar">
-                                <div class="probability-fill high" id="probHighBar" style="width: 0%"></div>
+                    <!-- Tabs -->
+                    <div class="flex gap-2 mb-6 border-b-4 border-gray-300">
+                        <button
+                            class="tab px-6 py-3 bg-amber-50 border-2 border-gray-300 border-b-0 text-gray-600 font-semibold rounded-t-lg -mb-1 hover:bg-white hover:text-gray-900 transition-all duration-200 active"
+                            data-tab="prediction">
+                            Prediction
+                        </button>
+                        <button
+                            class="tab px-6 py-3 bg-amber-50 border-2 border-gray-300 border-b-0 text-gray-600 font-semibold rounded-t-lg -mb-1 hover:bg-white hover:text-gray-900 transition-all duration-200"
+                            data-tab="explanation">
+                            XAI Explanation
+                        </button>
+                        <button
+                            class="tab px-6 py-3 bg-amber-50 border-2 border-gray-300 border-b-0 text-gray-600 font-semibold rounded-t-lg -mb-1 hover:bg-white hover:text-gray-900 transition-all duration-200"
+                            data-tab="comparison">
+                            Model Comparison
+                        </button>
+                    </div>
+
+                    <!-- Prediction Tab -->
+                    <div class="tab-content" id="predictionTab">
+                        <div
+                            class="bg-amber-50 border-4 border-dashed border-gray-400 rounded-2xl p-8 mb-6 text-center relative overflow-hidden">
+                            <div class="absolute inset-2 border-2 border-teal/20 rounded-xl pointer-events-none"></div>
+
+                            <div class="relative z-10">
+                                <div id="riskLevel"
+                                    class="text-5xl font-black mb-3 uppercase tracking-wide animate-pulse-slow">-</div>
+                                <div class="text-xl text-gray-600 font-semibold mb-4">
+                                    Confidence: <span id="confidenceScore" class="text-teal font-bold">-</span>
+                                </div>
+                                <div id="modelBadge"
+                                    class="inline-block px-6 py-2 bg-teal text-white font-bold text-sm border-2 border-black rounded-full shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+                                    -</div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Explanation Tab -->
-                <div class="tab-content" id="explanationTab">
-                    <div class="card-header">
-                        <span class="card-icon">🧠</span>
-                        <h3>SHAP Feature Importance</h3>
-                    </div>
-                    <div class="chart-container" id="shapChart">
-                        <p class="text-center" style="color: var(--text-muted);">Run analysis to see SHAP visualization</p>
+                        <div class="space-y-4" id="probabilityBars">
+                            <div class="probability-item transform hover:scale-105 transition-transform duration-200">
+                                <div class="flex justify-between mb-2 font-semibold text-gray-900">
+                                    <span>Low Risk</span>
+                                    <span id="probLow" class="text-green-600">0%</span>
+                                </div>
+                                <div class="h-3 bg-amber-50 border-2 border-gray-300 rounded-full overflow-hidden">
+                                    <div id="probLowBar"
+                                        class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                                        style="width: 0%">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+                                            style="background-size: 200% 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="probability-item transform hover:scale-105 transition-transform duration-200">
+                                <div class="flex justify-between mb-2 font-semibold text-gray-900">
+                                    <span>Medium Risk</span>
+                                    <span id="probMedium" class="text-yellow-600">0%</span>
+                                </div>
+                                <div class="h-3 bg-amber-50 border-2 border-gray-300 rounded-full overflow-hidden">
+                                    <div id="probMediumBar"
+                                        class="h-full bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                                        style="width: 0%">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+                                            style="background-size: 200% 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="probability-item transform hover:scale-105 transition-transform duration-200">
+                                <div class="flex justify-between mb-2 font-semibold text-gray-900">
+                                    <span>High Risk</span>
+                                    <span id="probHigh" class="text-red-600">0%</span>
+                                </div>
+                                <div class="h-3 bg-amber-50 border-2 border-gray-300 rounded-full overflow-hidden">
+                                    <div id="probHighBar"
+                                        class="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
+                                        style="width: 0%">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"
+                                            style="background-size: 200% 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="card-header mt-2">
-                        <span class="card-icon">💡</span>
-                        <h3>LIME Explanation</h3>
-                    </div>
-                    <div class="explanation-text" id="limeExplanation">
-                        Run analysis to see LIME explanation
+                    <!-- Explanation Tab -->
+                    <div class="tab-content hidden" id="explanationTab">
+                        <div class="mb-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-xl text-teal">◆</span>
+                                <h3 class="text-lg font-bold text-gray-900">SHAP Feature Importance</h3>
+                            </div>
+                            <div id="shapChart"
+                                class="bg-white border-2 border-gray-300 rounded-xl p-4 animate-slide-up">
+                                <p class="text-center text-gray-500">Run analysis to see SHAP visualization</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-xl text-coral">★</span>
+                                <h3 class="text-lg font-bold text-gray-900">LIME Explanation</h3>
+                            </div>
+                            <div id="limeExplanation"
+                                class="bg-amber-50 border-l-4 border-coral p-4 rounded-lg italic text-gray-700 leading-relaxed">
+                                Run analysis to see LIME explanation
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="text-xl text-teal">■</span>
+                                <h3 class="text-lg font-bold text-gray-900">Top Contributing Features</h3>
+                            </div>
+                            <ul id="featureList" class="space-y-2">
+                                <li class="text-center text-gray-500">No data available</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div class="card-header mt-2">
-                        <span class="card-icon">📈</span>
-                        <h3>Top Contributing Features</h3>
-                    </div>
-                    <ul class="feature-list" id="featureList">
-                        <li class="text-center" style="color: var(--text-muted);">No data available</li>
-                    </ul>
-                </div>
-
-                <!-- Comparison Tab -->
-                <div class="tab-content" id="comparisonTab">
-                    <div class="card-header">
-                        <span class="card-icon">⚖️</span>
-                        <h3>Model Comparison</h3>
-                    </div>
-                    <div class="comparison-grid" id="comparisonGrid">
-                        <p class="text-center" style="color: var(--text-muted);">Run analysis to compare models</p>
+                    <!-- Comparison Tab -->
+                    <div class="tab-content hidden" id="comparisonTab">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-xl text-teal">◇</span>
+                            <h3 class="text-lg font-bold text-gray-900">Model Comparison</h3>
+                        </div>
+                        <div id="comparisonGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <p class="text-center text-gray-500 col-span-full">Run analysis to compare models</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Footer Info -->
-        <div class="card">
-            <div class="card-header">
-                <span class="card-icon">ℹ️</span>
-                <h3 class="card-title">About This System</h3>
+        <div class="bg-white border-4 border-black rounded-xl p-6 shadow-lg animate-slide-up">
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b-2 border-dashed border-gray-300">
+                <span class="text-2xl text-coral font-bold">i</span>
+                <h3 class="text-lg font-bold text-gray-900">About This System</h3>
             </div>
-            <p style="color: var(--text-secondary); line-height: 1.8;">
-                This Healthcare Risk Prediction system uses advanced <strong>Machine Learning</strong> and 
-                <strong>Deep Learning</strong> algorithms to assess disease risk based on patient health data. 
-                The system integrates <strong>Explainable AI (XAI)</strong> techniques including 
-                <strong>SHAP</strong> (SHapley Additive Explanations) and <strong>LIME</strong> 
-                (Local Interpretable Model-agnostic Explanations) to provide transparent, interpretable 
+            <p class="text-gray-600 leading-relaxed">
+                This Healthcare Risk Prediction system uses advanced <strong class="text-teal">Machine Learning</strong>
+                and
+                <strong class="text-teal">Deep Learning</strong> algorithms to assess disease risk based on patient
+                health data.
+                The system integrates <strong class="text-coral">Explainable AI (XAI)</strong> techniques including
+                <strong class="text-coral">SHAP</strong> (SHapley Additive Explanations) and <strong
+                    class="text-coral">LIME</strong>
+                (Local Interpretable Model-agnostic Explanations) to provide transparent, interpretable
                 predictions that healthcare professionals can trust and understand.
             </p>
         </div>
@@ -221,4 +401,5 @@
     <!-- JavaScript -->
     <script src="app.js"></script>
 </body>
+
 </html>

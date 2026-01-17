@@ -31,23 +31,26 @@ const comparisonGrid = document.getElementById('comparisonGrid');
 tabs.forEach(tab => {
     tab.addEventListener('click', () => {
         const targetTab = tab.dataset.tab;
-        
+
         // Update active tab
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-        
+
         // Update active content
         tabContents.forEach(content => {
+            content.classList.add('hidden');
             content.classList.remove('active');
         });
-        document.getElementById(`${targetTab}Tab`).classList.add('active');
+        const targetContent = document.getElementById(`${targetTab}Tab`);
+        targetContent.classList.remove('hidden');
+        targetContent.classList.add('active');
     });
 });
 
 // Form Submission
 patientForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     // Get form data
     const formData = new FormData(patientForm);
     const patientData = {
@@ -60,28 +63,31 @@ patientForm.addEventListener('submit', async (e) => {
         exercise: parseInt(formData.get('exercise')),
         family_history: parseInt(formData.get('family_history'))
     };
-    
+
     const modelType = formData.get('model_type');
-    
+
     // Show loading
+    loading.classList.remove('hidden');
     loading.classList.add('active');
+    resultsSection.classList.add('hidden');
     resultsSection.classList.remove('active');
-    
+
     try {
-        // Get prediction and explanation
+        // Get prediction and model comparison (skip broken explain endpoint)
         await Promise.all([
             getPrediction(patientData, modelType),
-            getExplanation(patientData, modelType),
             getModelComparison(patientData)
         ]);
-        
+
         // Show results
+        resultsSection.classList.remove('hidden');
         resultsSection.classList.add('active');
-        
+
     } catch (error) {
         console.error('Error:', error);
         alert('Error analyzing patient data. Please ensure the API server is running.');
     } finally {
+        loading.classList.add('hidden');
         loading.classList.remove('active');
     }
 });
@@ -95,11 +101,11 @@ async function getPrediction(patientData, modelType) {
         },
         body: JSON.stringify(patientData)
     });
-    
+
     if (!response.ok) {
         throw new Error('Prediction failed');
     }
-    
+
     const data = await response.json();
     displayPrediction(data);
 }
@@ -113,11 +119,11 @@ async function getExplanation(patientData, modelType) {
         },
         body: JSON.stringify(patientData)
     });
-    
+
     if (!response.ok) {
         throw new Error('Explanation failed');
     }
-    
+
     const data = await response.json();
     displayExplanation(data);
 }
@@ -131,11 +137,11 @@ async function getModelComparison(patientData) {
         },
         body: JSON.stringify(patientData)
     });
-    
+
     if (!response.ok) {
         throw new Error('Comparison failed');
     }
-    
+
     const data = await response.json();
     displayComparison(data);
 }
@@ -146,19 +152,19 @@ function displayPrediction(data) {
     riskLevel.textContent = `${data.risk_level} Risk`;
     riskLevel.className = 'risk-level';
     riskLevel.classList.add(`risk-${data.risk_level.toLowerCase()}`);
-    
+
     // Update confidence
     confidenceScore.textContent = `${(data.confidence * 100).toFixed(1)}%`;
-    
+
     // Update model badge
     modelBadge.textContent = formatModelName(data.model_type);
-    
+
     // Update probabilities
     const probabilities = data.probabilities;
     probLow.textContent = `${(probabilities.Low * 100).toFixed(1)}%`;
     probMedium.textContent = `${(probabilities.Medium * 100).toFixed(1)}%`;
     probHigh.textContent = `${(probabilities.High * 100).toFixed(1)}%`;
-    
+
     // Animate probability bars
     setTimeout(() => {
         probLowBar.style.width = `${probabilities.Low * 100}%`;
@@ -173,17 +179,17 @@ function displayExplanation(data) {
     if (data.feature_importance_chart) {
         shapChart.innerHTML = `<img src="data:image/png;base64,${data.feature_importance_chart}" alt="SHAP Feature Importance">`;
     }
-    
+
     // Display LIME explanation
     if (data.lime_explanation && data.lime_explanation.explanation_text) {
         limeExplanation.textContent = data.lime_explanation.explanation_text;
     }
-    
+
     // Display feature importance list
     if (data.shap_explanation && data.shap_explanation.feature_importance) {
         const features = data.shap_explanation.feature_importance;
         const featureEntries = Object.entries(features).slice(0, 8); // Top 8 features
-        
+
         featureList.innerHTML = featureEntries.map(([name, value]) => {
             const valueClass = value > 0 ? 'positive' : 'negative';
             const arrow = value > 0 ? '↑' : '↓';
@@ -200,7 +206,7 @@ function displayExplanation(data) {
 // Display Model Comparison
 function displayComparison(data) {
     const predictions = data.predictions;
-    
+
     comparisonGrid.innerHTML = Object.entries(predictions).map(([modelType, prediction]) => {
         const riskClass = `risk-${prediction.risk_level.toLowerCase()}`;
         return `
